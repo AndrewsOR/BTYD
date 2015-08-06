@@ -2,7 +2,7 @@
 # Get ready to model
 
 ##Install packages
-toInstallCandidates <- c("ggplot2", "reshape2", "plyr", "lubridate", "devtools", "gsl")
+toInstallCandidates <- c("ggplot2", "reshape2", "plyr", "lubridate", "devtools", "gsl", "data.table", "vcd", "gplots", "ggdendro")
 
 # check if pkgs are already present
 
@@ -44,6 +44,8 @@ summary(elog)
 max(elog$date);
 min(elog$date);
 qplot(date, sales, data = elog)
+#dev.copy(png,'SalesByTime.png')
+#dev.off()
 
 #p<-ggplot(elog, aes(date, sales))
 #p+geom_point(aes(color=factor(sales<=3*sd(sales))))
