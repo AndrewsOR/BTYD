@@ -152,7 +152,7 @@ dc.SplitUpElogForRepeatTrans <- function(elog) {
     
     # [-1] is because we don't want to include two custs columns
     cust.data <- data.frame(first.trans.data, last.trans.data[, -1], m.x)
-    names(cust.data) <- c(names(first.trans.data), names(last.trans.data)[-1])
+    names(cust.data) <- c(names(first.trans.data), names(last.trans.data)[-1], "m.x")
     
     dc.WriteLine("Finished Creating Repeat Purchases")
     return(list(repeat.trans.elog = repeat.trans.elog, cust.data = cust.data))
