@@ -123,6 +123,8 @@ dc.SplitUpElogForRepeatTrans <- function(elog) {
     first.trans.indices <- rep(0, length(unique.custs))
     last.trans.indices <- rep(0, length(unique.custs))
     count <- 0
+    m.x <- rep(0, length(unique.custs))
+    
     for (cust in unique.custs) {
         count <- count + 1
         cust.indices <- which(elog$cust == cust)
@@ -133,6 +135,9 @@ dc.SplitUpElogForRepeatTrans <- function(elog) {
         # Of this customer's transactions, find the index of the last one
         last.trans.indices[count] <- min(cust.indices[which(elog$date[cust.indices] == 
             max(elog$date[cust.indices]))])
+        
+        #Create a mean value of sales per customer
+        m.x[count]<-mean(elog$sales[cust.indices])
     }
     repeat.trans.elog <- elog[-first.trans.indices, ]
     
@@ -146,7 +151,7 @@ dc.SplitUpElogForRepeatTrans <- function(elog) {
     names(last.trans.data) <- paste("last.", names(last.trans.data), sep = "")
     
     # [-1] is because we don't want to include two custs columns
-    cust.data <- data.frame(first.trans.data, last.trans.data[, -1])
+    cust.data <- data.frame(first.trans.data, last.trans.data[, -1], m.x)
     names(cust.data) <- c(names(first.trans.data), names(last.trans.data)[-1])
     
     dc.WriteLine("Finished Creating Repeat Purchases")
