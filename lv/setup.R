@@ -41,8 +41,6 @@ summary(elog)
 #elog <- elog[sample(nrow(elog), 3000), ]
 #str(elog)
 
-max(elog$date);
-min(elog$date);
 qplot(date, sales, data = elog)
 #dev.copy(png,'SalesByTime.png')
 #dev.off()
@@ -58,31 +56,31 @@ qplot(date, sales, data = elog)
 
 # Approach #1
 # Merge transactions on the same day
-elog <- dc.MergeTransactionsOnSameDate(elog)
+#elog <- dc.MergeTransactionsOnSameDate(elog)
 
 # Split into calibration and holdout period
-end.of.cal.period <- as.Date("2013-12-31")
-elog.cal <- elog[which(elog$date <= end.of.cal.period), ]
+#end.of.cal.period <- min(elog$date) + as.numeric((max(elog$date)-min(elog$date))/2)
+#elog.cal <- elog[which(elog$date <= end.of.cal.period), ]
 
 # Information about the customer
-split.data <- dc.SplitUpElogForRepeatTrans(elog.cal)
-clean.elog <- split.data$repeat.trans.elog
+#split.data <- dc.SplitUpElogForRepeatTrans(elog.cal)
+#clean.elog <- split.data$repeat.trans.elog
 
 ## Create customer-by-time matrix
-freq.cbt <- dc.CreateFreqCBT(clean.elog)
-tot.cbt <- dc.CreateFreqCBT(elog)
-cal.cbt <- dc.MergeCustomers(tot.cbt, freq.cbt)
-birth.periods <- split.data$cust.data$birth.per
-last.dates <- split.data$cust.data$last.date
-cal.cbs.dates <- data.frame(birth.periods, last.dates,
-                            end.of.cal.period)
-cal.cbs <- dc.BuildCBSFromCBTAndDates(cal.cbt, cal.cbs.dates,
-                                      per="week")
+#freq.cbt <- dc.CreateFreqCBT(clean.elog)
+#tot.cbt <- dc.CreateFreqCBT(elog)
+#cal.cbt <- dc.MergeCustomers(tot.cbt, freq.cbt)
+#birth.periods <- split.data$cust.data$birth.per
+#last.dates <- split.data$cust.data$last.date
+#cal.cbs.dates <- data.frame(birth.periods, last.dates, end.of.cal.period)
+#cal.cbs <- dc.BuildCBSFromCBTAndDates(cal.cbt, cal.cbs.dates, per="week")
+
+
 # Approach #2
 # Alternative Method - ElogToCbsCbt
 
-T.cal <- as.Date("2013-12-31")
-simData <- dc.ElogToCbsCbt(elog, per="week", T.cal)
+end.of.cal.period <- min(elog$date) + as.numeric((max(elog$date)-min(elog$date))/2)
+simData <- dc.ElogToCbsCbt(elog, per="week", end.of.cal.period, merge.same.date = TRUE, statistic = "freq")
 cal.cbs <- simData$cal$cbs
 cal.cbt <- simData$cal$cbt
 
