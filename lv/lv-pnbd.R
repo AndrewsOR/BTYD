@@ -1,6 +1,6 @@
 source("setup.R")
 
-#cal.cbs <- as.data.frame(cal.cbs)
+#Parameter estimation
 params <- pnbd.EstimateParameters(cal.cbs)
 params
 
@@ -119,4 +119,16 @@ pnbd.Plot.DERT(params, x=0:14, t.x=0:77, T.cal=77.86, d, type="contour")
 dev.copy(png,'DERT-iso.png')
 dev.off()
 
+ave.spend <- as.vector(simData$cust.data$m.x)
+ave.spend[ave.spend<0]<-0
+tot.trans <- cal.cbs[,"x"]
 
+spend.params <-spend.EstimateParameters(ave.spend, tot.trans)
+spend.params
+# What is the expected value of a customer with average transactions of $25 and 2 tx during calibration period?
+spend.expected.value(spend.params, m.x=25, x=1)
+
+spend.plot.average.transaction.value(spend.params, ave.spend, tot.trans)
+dev.copy(png,'SpendPlot.png')
+dev.off()
+                                     
