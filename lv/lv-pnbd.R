@@ -78,7 +78,7 @@ head(tot.cbt)
 
 # ...Completed Freq CBT
 d.track.data <- rep(0, 7 * 105)
-origin <- as.Date("2013-01-01")
+origin <- min(elog$date)
 for (i in colnames(tot.cbt)){
   date.index <- difftime(as.Date(i), origin) + 1;
   d.track.data[date.index] <- sum(tot.cbt[,i]);

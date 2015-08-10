@@ -32,14 +32,16 @@ elogFile <- "TxData.csv"
 elog <- dc.ReadLines(elogFile, cust.idx = 1,
                      date.idx = 2, sales.idx = 3)
 elog$date <- as.Date(elog$date, "%m/%d/%Y");
+elog$cust <- as.character(as.numeric(elog$cust)/10000000000000)
 head(elog)
 summary(elog)
 
 # Cohort identification
 cohorts<- subset(elog, (date<"2013-07-31"))
 cohort_cust<- unique(cohorts$cust)
-elog<- elog[elog[, "cust"] == cohort_cust,]
-  
+str(cohort_cust)
+elog<-elog[which(elog$cust %in% cohort_cust),]
+
 # Optional - Sample the data
 #class(elog)
 #elog <- elog[sample(nrow(elog), 3000), ]
