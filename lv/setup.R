@@ -31,11 +31,15 @@ library(BTYD)
 elogFile <- "TxData.csv"
 elog <- dc.ReadLines(elogFile, cust.idx = 1,
                      date.idx = 2, sales.idx = 3)
-head(elog,10)
 elog$date <- as.Date(elog$date, "%m/%d/%Y");
 head(elog)
 summary(elog)
 
+# Cohort identification
+cohorts<- subset(elog, (date<"2013-07-31"))
+cohort_cust<- unique(cohorts$cust)
+elog<- elog[elog[, "cust"] == cohort_cust,]
+  
 # Optional - Sample the data
 #class(elog)
 #elog <- elog[sample(nrow(elog), 3000), ]
