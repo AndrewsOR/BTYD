@@ -30,18 +30,6 @@ dev.off()
 
 pnbd.Expectation(params, t=52)
 
-# Expected behavior from a particular customer
-custName <- sample(cal.cbs[,1],1)
-custName
-
-cal.cbs[custName,]
-
-x<-cal.cbs[custName,"x"]
-t.x <-cal.cbs[custName,"t.x"]
-T.cal <- cal.cbs[custName,"T.cal"]
-
-pnbd.ConditionalExpectedTransactions(params, T.star = 52, x, t.x, T.cal)
-pnbd.PAlive(params, x, t.x, T.cal)
 
 # To visualize the distribution of P(Alive) across customers:
 p.alives <- pnbd.PAlive(params, cal.cbs[,"x"], cal.cbs[,"t.x"], cal.cbs[,"T.cal"])
@@ -122,13 +110,43 @@ dev.off()
 ave.spend <- as.vector(simData$cust.data$m.x)
 ave.spend[ave.spend<0]<-0
 tot.trans <- cal.cbs[,"x"]
+#ave.spend <- ave.spend[which(tot.trans > 0)]
+#tot.trans <- tot.trans[which(tot.trans > 0)]
 
-spend.params <-spend.EstimateParameters(ave.spend, tot.trans)
-spend.params
-# What is the expected value of a customer with average transactions of $25 and 2 tx during calibration period?
-spend.expected.value(spend.params, m.x=25, x=1)
+sp.params <-spend.EstimateParameters(ave.spend, tot.trans)
+sp.params
+sp.LL <- sum(spend.LL(sp.params, ave.spend, tot.trans))
+sp.LL
 
-spend.plot.average.transaction.value(spend.params, ave.spend, tot.trans)
+sp.matrix <- c(sp.params, sp.LL);
+for (i in 1:2){
+  sp.params <- spend.EstimateParameters(ave.spend, tot.trans, sp.params);
+  sp.LL <- sum(spend.LL(sp.params, ave.spend, tot.trans))
+  sp.matrix.row <- c(sp.params, sp.LL);
+  sp.matrix <- rbind(sp.matrix, sp.matrix.row);
+}
+colnames(sp.matrix) <- c("p", "q", "gamma", "LL")
+rownames(sp.matrix) <- 1:3;
+sp.matrix;
+
+
+# Expected behavior from a particular customer
+custIdx <- sample(cal.cbs[,1],1)
+custIdx
+cal.cbs[custIdx,]
+myx<-cal.cbs[custIdx,"x"]
+myt.x <-cal.cbs[custIdx,"t.x"]
+myT.cal <- cal.cbs[custIdx,"T.cal"]
+mym.x <-ave.spend[custIdx]
+pnbd.ConditionalExpectedTransactions(params, T.star = 52, myx, myt.x, myT.cal)
+pnbd.PAlive(params, myx, myt.x, myT.cal)
+mym.x
+spend.expected.value(sp.params, mym.x, myx)
+pnbd.DERT(params, myx, myt.x, T.cal, d)
+etpv <-pnbd.DERT(params, myx, myt.x, T.cal, d)*spend.expected.value(sp.params, mym.x, myx)
+etpv
+
+spend.plot.average.transaction.value(sp.params, ave.spend, tot.trans)
 dev.copy(png,'SpendPlot.png')
 dev.off()
                                      

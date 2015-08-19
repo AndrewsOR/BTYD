@@ -42,6 +42,11 @@ cohort_cust<- unique(cohorts$cust)
 str(cohort_cust)
 elog<-elog[which(elog$cust %in% cohort_cust),]
 
+
+cust1elog<-elog[which(elog$cust %in% "160428"),]
+qplot(date, sales, data = cust1elog)
+
+
 # Optional - Sample the data
 #class(elog)
 #elog <- elog[sample(nrow(elog), 3000), ]
