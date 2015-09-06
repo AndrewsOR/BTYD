@@ -28,11 +28,21 @@ if (local){
 }
 library(BTYD)
 
-elogFile <- "TxData.csv"
-elog <- dc.ReadLines(elogFile, cust.idx = 1,
-                     date.idx = 2, sales.idx = 3)
-elog$date <- as.Date(elog$date, "%m/%d/%Y");
-elog$cust <- as.character(as.numeric(elog$cust)/10000000000000)
+cust_merch <-1
+
+if(cust_merch){
+  elogFile <- "TxData.csv"
+  elog <- dc.ReadLines(elogFile, cust.idx = 1,
+                       date.idx = 2, sales.idx = 3)
+  elog$date <- as.Date(elog$date, "%m/%d/%Y");
+  elog$cust <- as.character(as.numeric(elog$cust)/10000000000000)
+  
+}else {
+  elogFile <- "MTxData.csv"
+  elog <- dc.ReadLines(elogFile, cust.idx = 1,
+                       date.idx = 2, sales.idx = 3)
+  elog$date <- as.Date(elog$date, "%m/%d/%Y");
+}
 head(elog)
 summary(elog)
 
@@ -42,8 +52,11 @@ cohort_cust<- unique(cohorts$cust)
 str(cohort_cust)
 elog<-elog[which(elog$cust %in% cohort_cust),]
 
-
-cust1elog<-elog[which(elog$cust %in% "160428"),]
+if(cust_merch) {
+  cust1elog<-elog[which(elog$cust %in% "160428"),]
+} else {
+  cust1elog<-elog[which(elog$cust %in% "2218002697173354568 "),]
+}
 qplot(date, sales, data = cust1elog)
 
 
