@@ -28,7 +28,7 @@ if (local){
 }
 library(BTYD)
 
-cust_merch <-1
+cust_merch <-0
 
 if(cust_merch){
   elogFile <- "TxData.csv"
@@ -49,6 +49,7 @@ summary(elog)
 # Cohort identification
 cohorts<- subset(elog, (date<"2013-07-31"))
 cohort_cust<- unique(cohorts$cust)
+#cohort_cust <- cohort_cust[1:1000]
 str(cohort_cust)
 elog<-elog[which(elog$cust %in% cohort_cust),]
 
